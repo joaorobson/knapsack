@@ -15,8 +15,12 @@ class Knapsack extends React.Component {
     super(props);
     this.state = {
       items: [
-        { id: 1, mass: 2, value: 1 },
-        { id: 2, mass: 5, value: 3 }
+        { id: 1, mass: 6, value: 10 },
+        { id: 2, mass: 1, value: 5 },
+        { id: 3, mass: 2, value: 7 },
+        { id: 4, mass: 5, value: 12 },
+        { id: 5, mass: 4, value: 8 },
+        { id: 6, mass: 3, value: 6 }
       ]
     };
   }
@@ -27,7 +31,6 @@ class Knapsack extends React.Component {
     let value = parseInt(this.state.value);
     let minWeight =
       this.state.weightLimit > mass ? mass : this.state.weightLimit;
-    console.log("oooo", minWeight);
     items.push({
       id: this.state.items.length + 1,
       mass: mass,
@@ -58,24 +61,46 @@ class Knapsack extends React.Component {
     );
   }
 
-  getDPValues(ix) {
-    return [
-      [1, 2, 3],
-      [4, 5, 6]
-    ][ix];
-  }
-
   mountRows() {
+    var weightList = this.state.items.map((x) => x['mass']);
+    var valueList = this.state.items.map((x) => x['value']);
+    var CostTable = this.dynamicKnapsack(this.state.weightLimit, this.state.items.length, weightList, valueList);
+
     return this.state.items.map((i, ix) => {
       return (
         <Table.Row>
           <Table.Cell width={1}>Item {ix + 1}</Table.Cell>
-          {this.getDPValues(ix).map(j => (
-            <Table.Cell>{j}</Table.Cell>
-          ))}
+          {CostTable[ix].map((j, jx) => {
+            return (ix === this.state.items.length - 1 && jx === this.state.weightLimit) ? <Table.Cell style={{backgroundColor: "#8ce885"}}>{j}</Table.Cell> : <Table.Cell>{j}</Table.Cell>
+          })}
         </Table.Row>
       );
     });
+  }
+
+  dynamicKnapsack(total_weight, item_count, Weight, Benefit){
+    let CostTable = []
+
+    for(var i=0; i < Weight.length; i++){
+      CostTable.push(Array(total_weight + 1).fill(0));
+    }
+
+    for(i = 0; i < item_count; ++i){
+      CostTable[i][0] = 0;
+
+      for(var w = 0; w <= total_weight; ++w){
+        if(i === 0){
+          if(w >= Weight[i]){
+            CostTable[i][w] = Benefit[i];
+          }
+        } else if(Weight[i] <= w){
+            CostTable[i][w] = Math.max(Benefit[i] + CostTable[i-1][w - Weight[i]], CostTable[i-1][w])
+        } else{
+            CostTable[i][w] = CostTable[i-1][w]
+        }
+      }
+    }
+    return CostTable;
   }
 
   mountDPMatrix() {
@@ -89,7 +114,6 @@ class Knapsack extends React.Component {
   }
 
   itemsList() {
-    console.log(this.state);
     return (
       <List celled ordered>
         {this.state.items.map(item => (
@@ -145,6 +169,10 @@ class Knapsack extends React.Component {
     }
   }
 
+  setWeightLimit(weightLimit){
+    this.setState({weightLimit: parseInt(this.state.limit)})
+  }
+
   render() {
     return (
       <Grid columns="equal" style={{ margin: "40px" }}>
@@ -190,10 +218,10 @@ class Knapsack extends React.Component {
                 />
               </Form.Group>
               <Form.Button
-                onClick={this.addItem.bind(this)}
+                onClick={() => this.setWeightLimit()}
                 disabled={!this.state.limit}
               >
-                Adicionar item à mochila
+                Setar peso
               </Form.Button>
             </Form>
           </Grid.Column>
