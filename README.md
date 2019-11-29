@@ -1,3 +1,9 @@
+# Knapsack
+
+O objetivo desse projeto é prover uma interface para visualizar a resolução do [problema clássico da mochila](https://www.geeksforgeeks.org/0-1-knapsack-problem-dp-10/)(0-1 Knapsack) utilizando programação dinâmica. O problema funciona da seguinte forma: dado um conjunto de itens, escolher o número de cada item (neste caso específico, esse valor só pode ser 0 ou 1, ou seja, colocar ou não o item na mochila) para que o valor total dos items seja maximizado e o peso não ultrapasse um limite pré-estabelecido. 
+
+# Como executar
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts

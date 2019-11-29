@@ -221,7 +221,7 @@ class Knapsack extends React.Component {
                 onClick={() => this.setWeightLimit()}
                 disabled={!this.state.limit}
               >
-                Setar peso
+               	Atualizar peso limite 
               </Form.Button>
             </Form>
           </Grid.Column>
